@@ -24,11 +24,15 @@ Vagrant.configure("2") do |config|
         vb.cpus = machine_config["cpus"]
         vb.memory = machine_config["memory_mb"]
 
-        disk_path = "./#{machine_config["name"]}_secondary_disk.vdi"
-        if not File.exist?(disk_path)
-          vb.customize ["createvdi", "--filename", disk_path, "--size", machine_config["secondary_disk_mb"]]
+        if machine_config.has_key?("external_disks")
+          machine_config["external_disks"].each_with_index do |disk_config, num|
+            disk_path = "./#{machine_config["name"]}_disk#{num+1}.vdi"
+            if not File.exist?(disk_path)
+              vb.customize ["createvdi", "--filename", disk_path, "--size", disk_config["size_mb"]]
+            end
+            vb.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', num+1, '--device', 0, '--type', 'hdd', '--medium', disk_path]
+          end
         end
-        vb.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disk_path]
       end
     end
   end

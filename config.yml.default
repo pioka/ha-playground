@@ -4,11 +4,14 @@ machines:
     memory_mb: 512
     private_ip: 192.168.222.91
     ssh_forward_port: 22291
-    secondary_disk_mb: 1024
+    external_disks:
+      - size_mb: 1024
+      - size_mb: 1024
 
   - name: node2
     cpus: 1
     memory_mb: 512
     private_ip: 192.168.222.92
     ssh_forward_port: 22292
-    secondary_disk_mb: 1024
+    external_disks:
+      - size_mb: 1024
